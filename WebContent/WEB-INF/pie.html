@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
+    <meta charset=utf-8 />
+    <title>Morris.js Donut Chart Example</title>
+</head>
+
+<body>
+    <button onclick="changepie()"> Change pie (local)</button>
+    <div id="donut-example"></div>
+    <button onclick="changepie_ajax()"> Change pie (ajax)</button>
+    <div id="donut-example"></div>
+</body>
+
+
+
+<script>
+    var donut = Morris.Donut({
+        element: 'donut-example',
+        data: [{
+            label: "Positive",
+            value: 12
+        }, {
+            label: "Negative",
+            value: 30
+        }, {
+            label: "Netural",
+            value: 20
+        }],
+        colors: ["#FF00FF", "#778899", "#E0FFFF"],
+    });
+
+    var updatedata = [{
+        label: "Positive",
+        value: 23
+    }, {
+        label: "Negative",
+        value: 34
+    }, {
+        label: "Netural",
+        value: 20
+    }];
+
+
+    function changepie() {
+        donut.setData(updatedata);
+    }
+
+    function changepie_ajax() {
+        $.ajax({
+                method: "POST",
+                url: "http://localhost:8080/trackingEmotion/responder",
+                data: {
+                    name: "John",
+                    location: "Boston"
+                }
+            })
+            .done(function(msg) {
+                alert("Data Saved: " + msg);
+            });
+
+
+    };
+
+
+    window.Morris.Donut.prototype.setData = function(data, redraw) {
+        if (redraw == null) {
+            redraw = true;
+        }
+        this.data = data;
+        this.values = (function() {
+            var _i, _len, _ref, _results;
+            _ref = this.data;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                row = _ref[_i];
+                _results.push(parseFloat(row.value));
+            }
+            return _results;
+        }).call(this);
+        this.dirty = true;
+        if (redraw) {
+            return this.redraw();
+        }
+    }
+</script>
+
+
+</html>
