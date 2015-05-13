@@ -30,7 +30,7 @@ public class QueryTweetsServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String keyword = (String) request.getParameter("keyword");
 		String[] keywords = {keyword};
-		CollectTweets.getTweetsByName(keywords);		
+		//CollectTweets.getTweetsByName(keywords);		
 	}
 
 	/**
