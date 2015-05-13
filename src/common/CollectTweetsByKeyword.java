@@ -20,7 +20,7 @@ public class CollectTweetsByKeyword {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String[] keywords = {"Jingwei Yang"};
+		String[] keywords = {"NWCEXE"};
 		String[] keywords_2 = {"Jingwei Yang"};
 		
 		getListenJobReady();
@@ -51,13 +51,29 @@ public class CollectTweetsByKeyword {
 	           @Override
 	           public void onStatus(Status status) {
 	           	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	           	System.out.println(status.getText());
 	           	System.out.println("The tweet's ID: " + String.valueOf(status.getId()));
 	           	System.out.println("The Screen name: " + status.getUser().getName());
+	           	System.out.println("The text of the tweet: " + status.getText());
+	           	System.out.println("The retweet count of the tweet: " + status.getRetweetCount());
+
+
+	            System.out.println("The user's Name: " + status.getUser().getName());
+	            System.out.println("The user's location: " + status.getUser().getLocation());
+	            System.out.println("The user's profile url: " + status.getUser().getProfileImageURL());
+	            System.out.println("The user's Description: " + status.getUser().getDescription());
+	            
+	            
+	            System.out.println("The user's place info latitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLatitude());
+	            System.out.println("The user's place info logitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLongitude());
+
+
+	            
+	            
 	           	//int sent_value = SentimentAnalysis.metricSentiment(status.getText());
 	           	//System.out.println("sentivalue:" + String.valueOf(sent_value));
 	           	TweetsFuntions.replyTweets(status.getUser().getScreenName(), status.getId(), "I trust you can do it!");;
-	           	
+	            
+	   	           	
 	           	if(status.getGeoLocation() != null){
 	          
 	           	/*
