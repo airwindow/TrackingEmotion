@@ -3,15 +3,31 @@
 <html>
 
 <head>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-    <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
-    <meta charset=utf-8 />
-    <title>Let's rock it!</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>We Deliver</title>
+    <meta name="generator" content="Bootply" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--<link href="css/styles.css" rel="stylesheet"> -->
 </head>
 
 
 <body>
+<!-- Button trigger modal -->
+<!--
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+-->
     <button id="btn1">click to change data(ajax)</button>
     <button id="btn_json">get json back</button>
     <div> </div>
@@ -19,11 +35,149 @@
     <form action="responder" method="get">
         <input type="submit" value="Start Workers">
     </form>
-</body>
+
+
+    <button onclick="add_tweet_window()"> Add new panel </button>
+
+<!-- Modal -->
+    <div id = "tweets_container" class="container">
+
+
+
+
+        <div class="row">
+            <div clss="col-sm-2">
+            </div>
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="[ panel panel-default ] panel-google-plus">
+                    <div class="panel-heading">
+                        <img class="[ img-circle pull-left ]" src="https://lh3.googleusercontent.com/-CxXg7_7ylq4/AAAAAAAAAAI/AAAAAAAAAQ8/LhCIKQC5Aq4/s46-c-k-no/photo.jpg" alt="Mouse0270" />
+                        <h3>Robert McIntosh</h3>
+                        <h5><span>Shared publicly</span> - <span>Jun 27, 2014</span> </h5>
+                    </div>
+                    <div class="panel-body" style="padding-bottom: 5px;">
+                        <p>Do people born in 2000 get to choose if they are Generation Y or Generation Z? How do you decide what generation you want to belong to?</p>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="[ btn btn-default ]">+1</button>
+                        <button type="button" class="[ btn btn-default ]" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"> 
+                            <span class="[ glyphicon glyphicon-share-alt ]"></span>
+                        </button>
+                    </div> 
+                </div>
+            </div>
+            <div clss="col-sm-2">
+            </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id = "form_1">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Reply Text</h4>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" rows="3" id = "1232113132-xysdsd"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+       
+        <button type="button" class="btn btn-default" id="1232113132-xysdsd" onClick = "send(this.id)">Send</button>
+        <!--
+        <button type="button" id = "send" value = "1232113132-xysdsd" >Send</button>
+    -->
+
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+    <div>
+
+
+
 
 
 <script>
-    //this function should update related html element!
+
+    
+function send(clicked_id) {
+    var uni = clicked_id;
+    uni = "textarea#"+uni;
+    //alert($(uni).val());
+
+    var uniqueID = clicked_id;
+    var reply_text = $(uni).val();
+
+
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:8080/trackingEmotion/GetLatestTweets",
+        data: {
+            send_ID: uniqueID,
+            send_text: reply_text,
+        },
+        dataType: "html"
+        })
+        .done(function(msg) {
+                //no latest tweet concerning the search topic
+            if (msg === "null") { 
+                    //alert("null");
+                } else {
+                    //alert("Data Received Saved: " + msg);
+                    processLatestTweet(msg);
+                }
+            });
+
+}
+
+
+
+</script>
+
+
+
+ <script>
+    //var relpy_modal_count = 0;
+    function add_tweet_window() {
+        relpy_modal_count += 1;
+        var temp_ID = getUniqueID("11111", "airwindow");
+        var strModal = getModalWindowString(temp_ID);
+        var strTweet = getTweetWindowString(temp_ID);
+        $('#tweets_container').append(strTweet);
+        $('#tweets_container').append(strModal);
+    }
+</script>
+
+
+
+
+<script>
+    function addWindows(status_id, screen_name) {
+        relpy_modal_count = relpy_modal_count + 1;
+        uniqueID = getUniqueID(status_id, screen_name);
+        str_tweet_window = getTweetWindowString(uniqueID);
+        str_modal_window = getModalWindowString(uniqueID);
+    }
+
+    function getUniqueID(status_id, screen_name) {
+        return status_id + "-" + screen_name;
+    }
+
+
+  </script>
+
+
+
+
+
+<!--This part is for updating new tweets and change panel-->
+<script>
     function getLatestTweet() {
 
          $.ajax({
@@ -38,23 +192,145 @@
             .done(function(msg) {
                 //no latest tweet concerning the search topic
                 if (msg === "null") { 
-                    alert("null");
+                    //alert("null");
                 } else {
-                    alert("Data Received Saved: " + msg);
+                    //alert("Data Received Saved: " + msg);
+                    processLatestTweet(msg);
                 }
             });
     }
 
 
 
+
+
+
+//total count of the modal windows were created up to now
+     var relpy_modal_count = 0;
+    //this function should update related html element!
+    function processLatestTweet(tweetjson) {
+        //alert("the passed in tweetjson" + tweetjson);
+        obj = JSON.parse(tweetjson);
+        //get all attributes from the passed in Json object.
+        status_id = String(obj.status_id);
+        screen_name = String(obj.screen_name);
+        text = String(obj.text);
+        create_time = String(obj.create_time);
+        retweet_count = String(obj.retweet_count);
+        image_url = String(obj.image_url);
+
+        //update modal count for each new passed in tweet.
+        relpy_modal_count += 1;
+        var temp_ID = getUniqueID(status_id, screen_name);
+
+        var strModal = getModalWindowString(temp_ID);
+        var strTweet = getTweetWindowString(temp_ID, text, create_time, retweet_count, image_url);
+
+
+        $('#tweets_container').append(strTweet);
+        $('#tweets_container').append(strModal); 
+    }
+
+
+
+
+
+function getTweetWindowString(uniqueID, text, create_time, retweet_count, image_url) {
+
+      var strTweet="";
+strTweet += "<div class=\"row\">";
+strTweet += "            <div clss=\"col-sm-2\">";
+strTweet += "            <\/div>";
+strTweet += "            <div class=\"col-sm-8 col-sm-offset-2\">";
+strTweet += "                <div class=\"[ panel panel-default ] panel-google-plus\">";
+strTweet += "                    <div class=\"panel-heading\">";
+strTweet += "                        <img class=\"[ img-circle pull-left ]\"src=\""; 
+strTweet += image_url;
+strTweet += "\" \/>";
+strTweet += "                        <h3>";
+strTweet += screen_name;
+strTweet += "<\/h3>";
+strTweet += "                        <h5><span>Shared publicly<\/span> - <span>";
+strTweet += create_time;
+strTweet += "<\/span> <\/h5>";
+strTweet += "                    <\/div>";
+strTweet += "                    <div class=\"panel-body\" style=\"padding-bottom: 5px;\">";
+strTweet += "                        <p>";
+strTweet += text;
+strTweet += "<\/p>";
+strTweet += "                    <\/div>";
+strTweet += "                    <div class=\"panel-footer\">";
+strTweet += "                        <button type=\"button\" class=\"[ btn btn-default ]\">";
+strTweet += retweet_count;
+strTweet += "<\/button>";
+strTweet += "                        <button type=\"button\" class=\"[ btn btn-default ]\" class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"";
+strTweet += "#" + "modal" + relpy_modal_count.toString();
+strTweet += "\"> ";
+strTweet += "                            <span class=\"[ glyphicon glyphicon-share-alt ]\"><\/span>";
+strTweet += "                        <\/button>";
+strTweet += "                    <\/div> ";
+strTweet += "                <\/div>";
+strTweet += "            <\/div>";
+strTweet += "            <div clss=\"col-sm-2\">";
+strTweet += "            <\/div>";
+strTweet += "    <\/div>";
+
+
+
+    return strTweet;
+    }
+
+
+
+
+
+
+
+function getModalWindowString(uniqueID) {
+
+var strModal="";
+strModal += "<div class=\"modal fade\" id=\""
+strModal += "modal" + relpy_modal_count.toString();
+strModal += "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">";
+strModal += "  <div class=\"modal-dialog\">";
+strModal += "    <form id = \"form_1\">";
+strModal += "    <div class=\"modal-content\">";
+strModal += "      <div class=\"modal-header\">";
+strModal += "        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;<\/span><\/button>";
+strModal += "        <h4 class=\"modal-title\" id=\"myModalLabel\">Reply Text<\/h4>";
+strModal += "      <\/div>";
+strModal += "      <div class=\"modal-body\">";
+strModal += "        <textarea class=\"form-control\" rows=\"3\" id = \"";
+strModal += uniqueID;
+strModal += "\"><\/textarea>";
+strModal += "      <\/div>";
+strModal += "      <div class=\"modal-footer\">";
+strModal += "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close<\/button>";
+strModal += "          <button type=\"button\" class=\"btn btn-default\" id=\"";
+strModal += uniqueID;
+strModal += "\" onClick = \"send(this.id)\">Send<\/button>";
+strModal += "      <\/div>";
+strModal += "    <\/div>";
+strModal += "  <\/form>";
+strModal += "  <\/div>";
+strModal += "<\/div>"; 
+
+
+return strModal;
+    }
+
+
+
+
     //this function is responsible for calling GetLatestTweets
     function myfunction() {
-        
+    	
+    	getLatestTweet();
         //alert("enter my function");
             setInterval(function() {
-            alert("enter break1");
+            //alert("enter break1");
                 getLatestTweet();
-            }, 1000 * 5) //call the GetLatestTweets Servlet every 5 seconds
+            }, 1000 * 1) //call the GetLatestTweets Servlet every 5 seconds
     }
 
 
@@ -76,3 +352,11 @@
         myfunction();
     });
 </script>
+
+
+</body>
+
+
+
+
+
