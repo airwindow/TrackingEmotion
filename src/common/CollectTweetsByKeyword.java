@@ -51,6 +51,7 @@ public class CollectTweetsByKeyword {
 	           @Override
 	           public void onStatus(Status status) {
 	           	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	           	/*
 	           	System.out.println("The tweet's ID: " + String.valueOf(status.getId()));
 	           	System.out.println("The Screen name: " + status.getUser().getName());
 	           	System.out.println("The text of the tweet: " + status.getText());
@@ -61,17 +62,33 @@ public class CollectTweetsByKeyword {
 	            System.out.println("The user's location: " + status.getUser().getLocation());
 	            System.out.println("The user's profile url: " + status.getUser().getProfileImageURL());
 	            System.out.println("The user's Description: " + status.getUser().getDescription());
+	            System.out.println("The tweet was created at : " + status.getCreatedAt());
+	            */
+	            
+	            TweetInfo temp_tweet = new TweetInfo();
+	            temp_tweet.setStatus_id(String.valueOf(status.getId()));
+	            temp_tweet.setScreen_name(status.getUser().getName());
+	            temp_tweet.setText(status.getText());
+	            temp_tweet.setImage_url(status.getUser().getProfileImageURL());
+	            temp_tweet.setRetweet_count(status.getCreatedAt().toString());
+	            temp_tweet.setRetweet_count(String.valueOf(status.getRetweetCount()));
+	            
+	            JSONObject json = new JSONObject(temp_tweet);
+	            System.out.println("The tweet in JSON format:" + json.toString());
+	            
+	            TweetsCollection.addNewTweet(temp_tweet);
 	            
 	            
-	            System.out.println("The user's place info latitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLatitude());
-	            System.out.println("The user's place info logitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLongitude());
+	            
+	            //System.out.println("The user's place info latitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLatitude());
+	            //System.out.println("The user's place info logitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLongitude());
 
 
 	            
 	            
 	           	//int sent_value = SentimentAnalysis.metricSentiment(status.getText());
 	           	//System.out.println("sentivalue:" + String.valueOf(sent_value));
-	           	TweetsFuntions.replyTweets(status.getUser().getScreenName(), status.getId(), "I trust you can do it!");;
+	           	//TweetsFuntions.replyTweets(status.getUser().getScreenName(), status.getId(), "I trust you can do it!");;
 	            
 	   	           	
 	           	if(status.getGeoLocation() != null){
@@ -153,7 +170,11 @@ public class CollectTweetsByKeyword {
 	
 	
 	static public void getTweetsByName(String[] keywords) {
+		try {
 		   twitterStream.cleanUp();
+		}catch (Exception e){
+			
+		}
 	       FilterQuery filtre = new FilterQuery();
 	       filtre.track(keywords);
 	       twitterStream.filter(filtre);
