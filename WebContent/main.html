@@ -181,14 +181,13 @@
 
 
             <div id="big-form" class="well auth-box">
-                <form>
                     <fieldset>
                         <!-- Text input-->
                         <div class="row">
                             <div class="col-xs-6 col-sm-6 col-md-6 col-sm-offset-3 ">
                                 <div class="form-group">
                                     <label class="control-label" for="textinput"> <i class="fa fa-video-camera"></i> Company Name </label>
-                                    <input id="textinput" name="textinput" placeholder="IBM" class="form-control input-md" type="text">
+                                    <input id="key_word" name="textinput" placeholder="IBM" class="form-control input-md" type="text">
                                 </div>
                             </div>
                         </div>
@@ -198,14 +197,13 @@
                     <!-- Button -->
                     <div class = "row">
                     <div class="form-group">
-                        <div class="col-sm-3 col-sm-offset-5">
-                            <button id="singlebutton" name="singlebutton" class="btn btn-primary">Begin Monitor</button>
+                        <div class="col-sm-3 col-sm-offset-4">
+                            <button id="search" class="btn btn-primary">Begin Monitor</button>
                         </div>
                     </div>
                 </div>
 
                 </fieldset>
-            </form>
             </div>
             <div class="clearfix"></div>
             </div>
@@ -214,9 +212,7 @@
 
 
 
-
-
-
+    <!--
     <div class="container">
     <div class = "row">
     <input id = "key_word" type = "text" name = "Key Word">
@@ -224,6 +220,7 @@
     <button id="query_latest_tweet">Query Latest Tweets</button>
     </div>
     </div>
+-->
 
 
 
@@ -268,10 +265,10 @@
 
     <!-- Negative Tweets Panel -->
     <div id = "negativeTweetsPanel" style="padding-top: 100px;">
+        <div class="section-heading inverse scrollpoint sp-effect3">
+            <p>Abnormal Tweets Conerning Your Company</p>
+        </div>
         <div id = "negative_tweets_container" class="container">
-            <div class="section-heading inverse scrollpoint sp-effect3">
-                <p>Abnormal Tweets Conerning Your Company</p>
-            </div>
         </div>
     </div>
 
@@ -280,10 +277,10 @@
 
     <!-- Positive Tweets Panel -->
     <div id = "positiveTweetsPanel" style="padding-top: 100px;">
+        <div class="section-heading inverse scrollpoint sp-effect3">
+            <p>Postive Tweets Concerning Your Company</p>
+        </div>
         <div id = "positive_tweets_container" class="container">
-            <div class="section-heading inverse scrollpoint sp-effect3">
-                <p>Postive Tweets Concerning Your Company</p>
-            </div>
         </div>
     </div>
 
@@ -848,6 +845,9 @@ $('#search').on('click', function() {
                     alert("Sucessfully send!")
                   }
             });
+
+    //begin to request latest tweets
+    myfunction();
     });
 
 
