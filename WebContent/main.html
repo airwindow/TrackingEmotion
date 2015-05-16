@@ -8,17 +8,17 @@
     <title>Real-time rummor tracking system</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <link rel="shortcut icon" href="favicon.png">
 
     <link rel="stylesheet" href="css/bootstrap.css">
-
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/slick.css">
     <link rel="stylesheet" href="js/rs-plugin/css/settings.css">
-
     <link rel="stylesheet" href="css/freeze.css">
 
+
+
+    <!--Javascript part-->
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="js/modernizr.custom.32033.js"></script>
 
@@ -37,33 +37,7 @@
     <link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" media="screen">
 
 
-    <style>
-    .demo-container {
-    box-sizing: border-box;
-    width: 850px;
-    height: 450px;
-    padding: 20px 15px 15px 15px;
-    margin: 15px auto 30px auto;
-    border: 1px solid #ddd;
-    background: #fff;
-    background: linear-gradient(#f6f6f6 0, #fff 50px);
-    background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
-    background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
-    background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
-    background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-
-.demo-placeholder {
-    width: 100%;
-    height: 100%;
-    font-size: 14px;
-    line-height: 1.2em;
-}
+   
 
 
     </style>
@@ -144,8 +118,10 @@
                 document.getElementById("chartPanel").style.display='block';
                 document.getElementById("negativeTweetsPanel").style.display='none';
                 document.getElementById("positiveTweetsPanel").style.display='none';
+                updateOverallEmotionChart();
                 return false;
             }
+
 
             function showAbnormalTweetsPanel() {
                 document.getElementById("searchPanel").style.display = 'none';
@@ -173,7 +149,7 @@
     <!--Search Part-->
     <div id = "searchPanel">
         <div class="wrapper">
-            <div class="container auth" style="padding: 150px 230px;">
+            <div class="container auth" style="padding: 90px 230px;">
             <div class="section-heading inverse scrollpoint sp-effect3">
                     <p>Understand What's The People Are Saying About Your Company</p>
                 </div>
@@ -227,7 +203,8 @@
 
     <!--Trend Part-->
     <div id = "trendPanel">
-        <div class="section-heading inverse scrollpoint sp-effect3">
+        <div class="section-heading inverse scrollpoint sp-effect3" style="
+    margin-top: 120px;">
                     <p>Real-time Emotional Index About Your Company</p>
         </div>
     </div>
@@ -237,7 +214,8 @@
     <!--Chart Part-->
     <div id = "chartPanel">
            <div class="container">
-                 <div class="section-heading inverse scrollpoint sp-effect3">
+                 <div class="section-heading inverse scrollpoint sp-effect3" style="
+    margin-top: 120px;">
                     <p>Public Opinions Toward Your Company</p>
                 </div>
                 <div class="row">
@@ -264,8 +242,9 @@
 
 
     <!-- Negative Tweets Panel -->
-    <div id = "negativeTweetsPanel" style="padding-top: 100px;">
-        <div class="section-heading inverse scrollpoint sp-effect3">
+    <div id = "negativeTweetsPanel" style="padding-top: 70px;">
+        <div class="section-heading inverse scrollpoint sp-effect3" style="
+    margin-top: 120px;">
             <p>Abnormal Tweets Conerning Your Company</p>
         </div>
         <div id = "negative_tweets_container" class="container">
@@ -276,8 +255,9 @@
 
 
     <!-- Positive Tweets Panel -->
-    <div id = "positiveTweetsPanel" style="padding-top: 100px;">
-        <div class="section-heading inverse scrollpoint sp-effect3">
+    <div id = "positiveTweetsPanel" style="padding-top: 70px;">
+        <div class="section-heading inverse scrollpoint sp-effect3" style="
+    margin-top: 120px;">
             <p>Postive Tweets Concerning Your Company</p>
         </div>
         <div id = "positive_tweets_container" class="container">
@@ -825,7 +805,6 @@ $('#search').on('click', function() {
 
       var key_word = $("#key_word").val();
 
-        alert(key_word);
        $.ajax({
         method: "POST",
         url: "http://localhost:8080/trackingEmotion/responder",
@@ -837,12 +816,13 @@ $('#search').on('click', function() {
         .done(function(msg) {
                 //no latest tweet concerning the search topic
 
-            if (msg === "failure") { 
-                    alert("Send failure!");
+            if (msg === "success") { 
+                    alert("Sucessfully initiate the stream!");
+
                 } else {
                     //alert("Data Received Saved: " + msg);
                     //processLatestTweet(msg);
-                    alert("Sucessfully send!")
+                    alert("Failure in initiating the stream");
                   }
             });
 
@@ -904,7 +884,7 @@ function send(clicked_id) {
                 } else {
                     //alert("Data Received Saved: " + msg);
                     //processLatestTweet(msg);
-                    alert("Sucessfully send!")
+                    alert("Sucessfully Send!")
                   }
             });
 
