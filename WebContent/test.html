@@ -35,18 +35,55 @@
   Launch demo modal
 </button>
 -->
-    <div class="container">
-	<div class = "row">
+<script>
+function showChart() {
+  document.getElementById("chartPanel").style.display='block';
+  document.getElementById("negativeTweetsPanel").style.display='none';
+  document.getElementById("positiveTweetsPanel").style.display='none';
+  return false;
+}
+
+function showNegativeTweets() {
+  document.getElementById("negativeTweetsPanel").style.display='block';
+  document.getElementById("chartPanel").style.display='none';
+  document.getElementById("positiveTweetsPanel").style.display='none';
+  return false;
+}
+
+
+function showPositiveTweets() {
+  document.getElementById("positiveTweetsPanel").style.display='block';
+  document.getElementById("chartPanel").style.display='none';
+  document.getElementById("negativeTweetsPanel").style.display='none';
+  return false;
+}
+
+</script>
+
+
+<div class="container">
+    <div class = "row">
     <input id = "key_word" type = "text" name = "Key Word">
     <button id="search">Search</button>
 
     <button id="query_latest_tweet">Query Latest Tweets</button>
-    
+
+    <button onclick = "showChart()">show Chart</button>
+    <button onclick = "showNegativeTweets()">show Negative Tweeets</button>
+    <button onclick = "showPositiveTweets()">show Positive Tweeets</button>
+
     </div>
-    </div>
-    
-    
-    
+</div>
+
+
+
+
+
+
+
+
+<!--Chart Part-->
+<div id = "chartPanel">
            <div class="container">
              <div class="section-heading inverse scrollpoint sp-effect3">
                 <h1>Public Overall Emotion</h1>
@@ -77,32 +114,24 @@
 
                 <div class="col-md-2 col-sm-2 col-xs-2">
                 </div>
-
-
-
                 </div>
             </div>
-    
-    
-    
-    
+</div>
     
     
 
-
-
-
-
-
-
-<!-- Modal -->
-    <div id = "tweets_container" class="container">
+<!-- Negative Tweets Panel -->
+<div id = "negativeTweetsPanel">
+    <div id = "negative_tweets_container" class="container">
     </div>
+</div>
 
 
-
-
-
+<!-- Positive Tweets Panel -->
+<div id = "positiveTweetsPanel">
+    <div id = "positive_tweets_container" class="container">
+    </div>
+</div>
 
 
 
@@ -135,7 +164,7 @@
                 label: "Positive",
                 value: 0
             }, {
-                label: "Netural",
+                label: "Neutral",
                 value: 0
             }, {
                 label: "Negative",
@@ -154,7 +183,7 @@
                 label: "Positive",
                 value: positive_count
             }, {
-                label: "Netural",
+                label: "Neutral",
                 value: neutural_count
             }, {
                 label: "Negative",
@@ -199,6 +228,9 @@ var relpy_modal_count = 0;
 
 
 $('#search').on('click', function() {
+
+    resetEnvironment();
+
       var key_word = $("#key_word").val();
 
         alert(key_word);
@@ -222,6 +254,30 @@ $('#search').on('click', function() {
                   }
             });
     });
+
+
+//When the search button was clicked, we should clear all divs and reset all global varialbes corresponding the previous search 
+function resetEnvironment() {
+    neutural_count = 0;
+    negative_count = 0;
+    positive_count = 0;
+
+    $('#negative_tweets_container').empty();
+    $('#positive_tweets_container').empty();
+
+    var zero_data = [{
+        label: "Positive",
+        value: 0
+    }, {
+        label: "Neutral",
+        value: 0
+    }, {
+        label: "Negative",
+        value: 0
+    }];
+
+    donut.setData(zero_data);
+}
 
 
 
@@ -325,22 +381,26 @@ function send(clicked_id) {
 
         sentiment_value = String(obj.sentiment_value);
 
+
+
+        var temp_ID = getUniqueID(status_id, screen_name);
+        var strModal = getModalWindowString(temp_ID);
+        var strTweet = getTweetWindowString(temp_ID, text, create_time, retweet_count, image_url);
+        relpy_modal_count += 1;
+
         //update modal count for each new passed in tweet. since we only display negative tweets, we only add the count for negative tweet.
         if (sentiment_value === "-1") {
             negative_count += 1;
-            relpy_modal_count += 1;
-
-            var temp_ID = getUniqueID(status_id, screen_name);
-            var strModal = getModalWindowString(temp_ID);
-            var strTweet = getTweetWindowString(temp_ID, text, create_time, retweet_count, image_url);
-
-            $('#tweets_container').append(strTweet);
-            $('#tweets_container').append(strModal); 
+            $('#negative_tweets_container').append(strTweet);
+            $('#negative_tweets_container').append(strModal); 
         
-        } else if (sentiment_value === "0"){
-            neutural_count += 1;
-        } else {
+        } else if (sentiment_value === "1"){
             positive_count += 1;
+            $('#positive_tweets_container').append(strTweet);
+            $('#positive_tweets_container').append(strModal); 
+
+        } else {
+            neutural_count += 1;
         }
 
         updateOverallEmotionChart();
@@ -440,8 +500,8 @@ return strModal;
 
     //this function is responsible for calling GetLatestTweets
     function myfunction() {
-    	
-    	getLatestTweet();
+        
+        getLatestTweet();
         //alert("enter my function");
             setInterval(function() {
             //alert("enter break1");
@@ -471,6 +531,7 @@ return strModal;
 
 
 </body>
+
 
 
 
