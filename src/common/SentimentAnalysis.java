@@ -47,15 +47,15 @@ public class SentimentAnalysis {
 			writer.close();
 			reader.close(); 
 			
-			return Integer.valueOf(ret); 
-			/*
+			//return Integer.valueOf(ret); 
+			
 			if (ret.equals("0"))
 				return -1;
 			else if(ret.equals("1") || ret.equals("2"))
 				return 0;
 			else
 				return 1;
-			 */			
+					
 			
 		} catch (Exception e) {
 			e.printStackTrace();

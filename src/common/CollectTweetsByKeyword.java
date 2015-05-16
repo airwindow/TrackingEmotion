@@ -51,34 +51,27 @@ public class CollectTweetsByKeyword {
 	           @Override
 	           public void onStatus(Status status) {
 	           	SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	           	/*
-	           	System.out.println("The tweet's ID: " + String.valueOf(status.getId()));
-	           	System.out.println("The Screen name: " + status.getUser().getName());
-	           	System.out.println("The text of the tweet: " + status.getText());
-	           	System.out.println("The retweet count of the tweet: " + status.getRetweetCount());
-
-
-	            System.out.println("The user's Name: " + status.getUser().getName());
-	            System.out.println("The user's location: " + status.getUser().getLocation());
-	            System.out.println("The user's profile url: " + status.getUser().getProfileImageURL());
-	            System.out.println("The user's Description: " + status.getUser().getDescription());
-	            System.out.println("The tweet was created at : " + status.getCreatedAt());
-	            */
+	           	
 	            
 	            TweetInfo temp_tweet = new TweetInfo();
 	            temp_tweet.setStatus_id(String.valueOf(status.getId()));
-	            temp_tweet.setScreen_name(status.getUser().getName());
+	            temp_tweet.setScreen_name(status.getUser().getScreenName());
 	            temp_tweet.setText(status.getText());
 	            temp_tweet.setImage_url(status.getUser().getProfileImageURL());
-	            temp_tweet.setRetweet_count(status.getCreatedAt().toString());
+	            temp_tweet.setCreate_time(status.getCreatedAt().toString());
 	            temp_tweet.setRetweet_count(String.valueOf(status.getRetweetCount()));
 	            
-	            JSONObject json = new JSONObject(temp_tweet);
-	            System.out.println("The tweet in JSON format:" + json.toString());
+	            int sentiment_value = SentimentAnalysis.metricSentiment(status.getText());
+	            temp_tweet.setSentiment_value(String.valueOf(sentiment_value));
+	            
 	            
 	            TweetsCollection.addNewTweet(temp_tweet);
+
+	            //JSONObject json = new JSONObject(temp_tweet);
 	            
-	            
+	            //System.out.println("The tweet in JSON format:" + json.toString());
+
+	            	            
 	            
 	            //System.out.println("The user's place info latitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLatitude());
 	            //System.out.println("The user's place info logitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLongitude());

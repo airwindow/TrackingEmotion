@@ -13,6 +13,7 @@ public class TweetInfo {
 	private String create_time;
 	private String retweet_count;
 	private String image_url;
+	private String sentiment_value;
 	
 	
 	public String getStatus_id() {
@@ -27,7 +28,7 @@ public class TweetInfo {
 	}
 	public void setScreen_name(String screen_name) {
 		this.screen_name = screen_name;
-		dict.put("screen_name", status_id);
+		dict.put("screen_name", screen_name);
 	}
 	public String getText() {
 		return text;
@@ -56,6 +57,13 @@ public class TweetInfo {
 	public void setImage_url(String image_url) {
 		this.image_url = image_url;
 		dict.put("image_url", image_url);
+	}
+	public String getSentiment_value() {
+		return sentiment_value;
+	}
+	public void setSentiment_value(String sentiment_value) {
+		this.sentiment_value = sentiment_value;
+		dict.put("sentiment_value", sentiment_value);
 	}
 	
 }

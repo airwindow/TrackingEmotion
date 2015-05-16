@@ -34,8 +34,8 @@ public class responder extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		
-		String[] keywords = {"NWCEXE"};
+		String send_key_word = (String) request.getParameter("send_key_word");
+		String[] keywords = {send_key_word};
 		//String[] keywords_2 = {"Jingwei Yang"};
 		
 		//getListenJobReady();
