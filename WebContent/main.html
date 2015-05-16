@@ -1,0 +1,1131 @@
+
+<!DOCTYPE html>
+
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Real-time rummor tracking system</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <link rel="shortcut icon" href="favicon.png">
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/slick.css">
+    <link rel="stylesheet" href="js/rs-plugin/css/settings.css">
+
+    <link rel="stylesheet" href="css/freeze.css">
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="js/modernizr.custom.32033.js"></script>
+
+    <!--pie chart partition-->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
+
+
+
+    <!--trend char partition-->
+
+
+
+    <!--This part is for abnormal tweets-->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" media="screen">
+
+
+    <style>
+    .demo-container {
+    box-sizing: border-box;
+    width: 850px;
+    height: 450px;
+    padding: 20px 15px 15px 15px;
+    margin: 15px auto 30px auto;
+    border: 1px solid #ddd;
+    background: #fff;
+    background: linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.demo-placeholder {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.2em;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="pre-loader">
+        <div class="load-con">
+            <img src="img/freeze/logo.png" class="animated fadeInDown" alt="">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="fa fa-bars fa-lg"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">
+                        <img src="img/freeze/logo.png" alt="" class="logo">
+                    </a>
+                </div>
+
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a onclick ="showSearchPanel()">Search</a>
+                        </li>
+                        <li><a onclick ="showTrendPanel()">Real-time Index</a>
+                        </li>
+                        <li><a onclick ="showOverallPanel()">Public</a>
+                        </li>
+                        <li><a onclick ="showAbnormalTweetsPanel()">Abnormal Tweets</a>
+                        </li>
+                        <li><a onclick ="showPositiveTweetsPanel()">Positive Tweets</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-->
+        </nav>
+
+        <!--Display the selected panel only-->
+        <script>
+            function showSearchPanel() {
+                document.getElementById("searchPanel").style.display = 'block';
+                document.getElementById("trendPanel").style.display = "none";           
+                document.getElementById("chartPanel").style.display='none';
+                document.getElementById("negativeTweetsPanel").style.display='none';
+                document.getElementById("positiveTweetsPanel").style.display='none';
+                return false;
+            }
+
+
+            function showTrendPanel() {
+                document.getElementById("searchPanel").style.display = 'none';
+                document.getElementById("trendPanel").style.display = "block";           
+                document.getElementById("chartPanel").style.display='none';
+                document.getElementById("negativeTweetsPanel").style.display='none';
+                document.getElementById("positiveTweetsPanel").style.display='none';
+                return false;
+            }
+
+            function showOverallPanel() {
+                document.getElementById("searchPanel").style.display = 'none';
+                document.getElementById("trendPanel").style.display = "none";           
+                document.getElementById("chartPanel").style.display='block';
+                document.getElementById("negativeTweetsPanel").style.display='none';
+                document.getElementById("positiveTweetsPanel").style.display='none';
+                return false;
+            }
+
+            function showAbnormalTweetsPanel() {
+                document.getElementById("searchPanel").style.display = 'none';
+                document.getElementById("trendPanel").style.display = "none";           
+                document.getElementById("chartPanel").style.display='none';
+                document.getElementById("negativeTweetsPanel").style.display='block';
+                document.getElementById("positiveTweetsPanel").style.display='none';
+                return false;
+            }
+
+            function showPositiveTweetsPanel() {
+                document.getElementById("searchPanel").style.display = 'none';
+                document.getElementById("trendPanel").style.display = "none";           
+                document.getElementById("chartPanel").style.display='none';
+                document.getElementById("negativeTweetsPanel").style.display='none';
+                document.getElementById("positiveTweetsPanel").style.display='block';
+                return false;
+            }
+        </script>
+    </header>
+
+
+
+
+    <!--Search Part-->
+    <div id = "searchPanel">
+        <div class="wrapper">
+            <div class="container auth" style="padding: 150px 230px;">
+            <div class="section-heading inverse scrollpoint sp-effect3">
+                    <p>Understand What's The People Are Saying About Your Company</p>
+                </div>
+
+
+
+            <div id="big-form" class="well auth-box">
+                <form>
+                    <fieldset>
+                        <!-- Text input-->
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-sm-offset-3 ">
+                                <div class="form-group">
+                                    <label class="control-label" for="textinput"> <i class="fa fa-video-camera"></i> Company Name </label>
+                                    <input id="textinput" name="textinput" placeholder="IBM" class="form-control input-md" type="text">
+                                </div>
+                            </div>
+                        </div>
+
+                        <span> <span>
+
+                    <!-- Button -->
+                    <div class = "row">
+                    <div class="form-group">
+                        <div class="col-sm-3 col-sm-offset-5">
+                            <button id="singlebutton" name="singlebutton" class="btn btn-primary">Begin Monitor</button>
+                        </div>
+                    </div>
+                </div>
+
+                </fieldset>
+            </form>
+            </div>
+            <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="container">
+    <div class = "row">
+    <input id = "key_word" type = "text" name = "Key Word">
+    <button id="search">Search</button>
+    <button id="query_latest_tweet">Query Latest Tweets</button>
+    </div>
+    </div>
+
+
+
+
+    <!--Trend Part-->
+    <div id = "trendPanel">
+        <div class="section-heading inverse scrollpoint sp-effect3">
+                    <p>Real-time Emotional Index About Your Company</p>
+        </div>
+    </div>
+
+
+
+    <!--Chart Part-->
+    <div id = "chartPanel">
+           <div class="container">
+                 <div class="section-heading inverse scrollpoint sp-effect3">
+                    <p>Public Opinions Toward Your Company</p>
+                </div>
+                <div class="row">
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                </div>
+                    <div class="col-md-8 col-sm-8 col-xs-8">
+                        <div class="panel panel-default" style = "background-color: rgba(255, 255, 255, 0.4);">
+                        <div class="panel-heading">
+                            Public Sentiment Statistics
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="donut-example"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    </div>
+                <div class="col-md-2 col-sm-2 col-xs-2">
+                </div>
+                </div>
+            </div>
+    </div>
+
+
+
+    <!-- Negative Tweets Panel -->
+    <div id = "negativeTweetsPanel" style="padding-top: 100px;">
+        <div id = "negative_tweets_container" class="container">
+            <div class="section-heading inverse scrollpoint sp-effect3">
+                <p>Abnormal Tweets Conerning Your Company</p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Positive Tweets Panel -->
+    <div id = "positiveTweetsPanel" style="padding-top: 100px;">
+        <div id = "positive_tweets_container" class="container">
+            <div class="section-heading inverse scrollpoint sp-effect3">
+                <p>Postive Tweets Concerning Your Company</p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    </div>
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script src="js/placeholdem.min.js"></script>
+    <script src="js/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script src="js/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/scripts.js"></script>
+
+
+
+    <!--This part is for preLoader-->
+
+    <script>
+        $(document).ready(function() {
+            appMaster.preLoader();
+        });
+    </script>
+
+    <!-- This script and style part is for search form-->
+    <style>
+        .margin-top-20 {
+            margin-top: 20px;
+        }
+        
+        body {
+            background: url('img/black.jpg');
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Open Sans', sans-serif;
+            padding-bottom: 40px;
+        }
+        
+        .auth h1 {
+            color: #fff!important;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+        }
+        
+        .auth h1 span {
+            font-size: 21px;
+            display: block;
+            padding-top: 20px;
+        }
+        
+        .auth .auth-box legend {
+            color: #fff;
+            border: none;
+            font-weight: 300;
+            font-size: 24px;
+        }
+        
+        .auth .auth-box {
+            background-color: #fff;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            ;
+            background-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.5);
+            margin-top: 40px;
+            -webkit-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 0.32);
+            -moz-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 0.32);
+            box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 0.32);
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-transition: background 1s ease-in-out;
+            -moz-transition: background 1s ease-in-out;
+            -ms-transition: background 1s ease-in-out;
+            -o-transition: background 1s ease-in-out;
+            transition: background 1s ease-in-out;
+        }
+        
+        @media(max-width:460px) {
+            .auth .auth-box {
+                margin: 0 10px;
+            }
+        }
+        
+        .auth .auth-box input::-webkit-input-placeholder {
+            /* WebKit browsers */
+            
+            color: #fff;
+            font-weight: 300;
+        }
+        
+        .auth .auth-box input:-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            
+            color: #fff;
+            font-weight: 300;
+        }
+        
+        .auth .auth-box input::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            
+            color: #fff;
+            font-weight: 300;
+        }
+        
+        .auth .auth-box input:-ms-input-placeholder {
+            /* Internet Explorer 10+ */
+            
+            color: #fff;
+            font-weight: 300;
+        }
+        
+        .auth span.input-group-addon,
+        .input-group-btn button {
+            border: none;
+            background: #fff!important;
+            color: #000!important;
+        }
+        
+        .auth form {
+            font-weight: 300!important;
+        }
+        
+        .auth form input[type="text"],
+        .auth form input[type="password"],
+        .auth form input[type="email"],
+        .auth form input[type="search"] {
+            border: none;
+            padding: 10px 0 10px 0;
+            background-color: rgba(255, 255, 255, 0)!important;
+            background: rgba(255, 255, 255, 0);
+            color: #fff;
+            font-size: 16px;
+            border-bottom: 1px dotted #fff;
+            border-radius: 0;
+            box-shadow: none!important;
+            height: auto;
+        }
+        
+        .auth textarea {
+            background-color: rgba(255, 255, 255, 0)!important;
+            color: #fff!important;
+        }
+        
+        .auth input[type="file"] {
+            color: #fff;
+        }
+        
+        .auth form label {
+            color: #fff;
+            font-size: 21px;
+            font-weight: 300;
+        }
+        /*for radios & checkbox labels*/
+        
+        .auth .radio label,
+        .auth label.radio-inline,
+        .auth .checkbox label,
+        .auth label.checkbox-inline {
+            font-size: 14px;
+        }
+        
+        .auth form .help-block {
+            color: #fff;
+        }
+        
+        .auth form select {
+            background-color: rgba(255, 255, 255, 0)!important;
+            background: rgba(255, 255, 255, 0);
+            color: #fff!important;
+            border-bottom: 1px solid #fff!important;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .auth form select option {
+            color: #000;
+        }
+        /*multiple select*/
+        
+        .auth select[multiple] option,
+        .auth select[size] {
+            color: #fff!important;
+        }
+        /*Form buttons*/
+        
+        .auth form .btn {
+            background: none;
+            -webkit-transition: background 0.2s ease-in-out;
+            -moz-transition: background 0.2s ease-in-out;
+            -ms-transition: background 0.2s ease-in-out;
+            -o-transition: background 0.2s ease-in-out;
+            transition: background 0.2s ease-in-out;
+        }
+        
+        .auth form .btn-default {
+            color: #fff;
+            border-color: #fff;
+        }
+        
+        .auth form .btn-default:hover {
+            background: rgba(225, 225, 225, 0.3);
+            color: #fff;
+            border-color: #fff;
+        }
+        
+        .auth form .btn-primary:hover {
+            background: rgba(66, 139, 202, 0.3);
+        }
+        
+        .auth form .btn-success:hover {
+            background: rgba(92, 184, 92, 0.3);
+        }
+        
+        .auth form .btn-info:hover {
+            background: rgba(91, 192, 222, 0.3);
+        }
+        
+        .auth form .btn-warning:hover {
+            background: rgba(240, 173, 78, 0.3);
+        }
+        
+        .auth form .btn-danger:hover {
+            background: rgba(217, 83, 79, 0.3);
+        }
+        
+        .auth form .btn-link {
+            border: none;
+            color: #fff;
+            padding-left: 0;
+        }
+        
+        .auth form .btn-link:hover {
+            background: none;
+        }
+        
+        .auth label.label-floatlabel {
+            font-weight: 300;
+            font-size: 11px;
+            color: #fff;
+            left: 0!important;
+            top: 1px!important;
+        }
+    </style>
+
+    <!--This partition is for abnormal tweets-->
+            <style>
+            @import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+            body {
+                background-color: rgb(229, 229, 229);
+                padding-top: 60px;
+                padding-bottom: 30px;
+            }
+            
+            .panel {
+                margin-bottom: 5px;
+            }
+            
+            .panel-google-plus {
+                position: relative;
+                border-radius: 0px;
+                border: 1px solid rgb(216, 216, 216);
+                font-family: 'Roboto', sans-serif;
+            }
+            
+            .panel-google-plus > .dropdown {
+                position: absolute;
+                top: 5px;
+                right: 15px;
+            }
+            
+            .panel-google-plus > .dropdown > span > span {
+                font-size: 10px;
+            }
+            
+            .panel-google-plus > .dropdown > .dropdown-menu {
+                left: initial;
+                right: 0px;
+                border-radius: 2px;
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags {
+                position: absolute;
+                top: 35px;
+                right: -3px;
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul {
+                list-style: none;
+                padding: 0px;
+                margin: 0px;
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul:hover {
+                box-shadow: 0px 0px 3px rgb(0, 0, 0);
+                box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.25);
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul > li {
+                display: block;
+                right: 0px;
+                width: 0px;
+                padding: 5px 0px 5px 0px;
+                background-color: rgb(245, 245, 245);
+                font-size: 12px;
+                overflow: hidden;
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul > li::after {
+                content: "";
+                position: absolute;
+                top: 0px;
+                right: 0px;
+                height: 100%;
+                border-right: 3px solid rgb(66, 127, 237);
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul:hover > li,
+            .panel-google-plus > .panel-google-plus-tags > ul > li:first-child {
+                padding: 5px 15px 5px 10px;
+                width: auto;
+                cursor: pointer;
+                margin-left: auto;
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul:hover > li {
+                background-color: rgb(255, 255, 255);
+            }
+            
+            .panel-google-plus > .panel-google-plus-tags > ul > li:hover {
+                background-color: rgb(66, 127, 237);
+                color: rgb(255, 255, 255);
+            }
+            
+            .panel-google-plus > .panel-heading,
+            .panel-google-plus > .panel-footer {
+                background-color: rgb(255, 255, 255);
+                border-width: 0px;
+            }
+            
+            .panel-google-plus > .panel-heading {
+                margin-top: 2px;
+                padding-bottom: 2px;
+            }
+            
+            .panel-google-plus > .panel-heading > img {
+                margin-right: 15px;
+            }
+            
+            .panel-google-plus > .panel-heading > h3 {
+                margin: 0px;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            
+            .panel-google-plus > .panel-heading > h5 {
+                color: rgb(153, 153, 153);
+                font-size: 12px;
+                font-weight: 400;
+            }
+            
+            .panel-google-plus > .panel-body {
+                padding-top: 5px;
+                font-size: 13px;
+            }
+            
+            .panel-google-plus > .panel-body > .panel-google-plus-image {
+                display: block;
+                text-align: center;
+                background-color: rgb(245, 245, 245);
+                border: 1px solid rgb(217, 217, 217);
+            }
+            
+            .panel-google-plus > .panel-body > .panel-google-plus-image > img {
+                max-width: 100%;
+            }
+            
+            .panel-google-plus > .panel-footer {
+                font-size: 14px;
+                font-weight: 700;
+                min-height: 54px;
+            }
+            
+            .panel-google-plus > .panel-footer > .btn {
+                float: left;
+                margin-right: 8px;
+            }
+            
+            .panel-google-plus > .panel-footer > .input-placeholder {
+                display: block;
+                margin-left: 98px;
+                color: rgb(153, 153, 153);
+                font-size: 12px;
+                font-weight: 400;
+                padding: 8px 6px 7px;
+                border: 1px solid rgb(217, 217, 217);
+                border-radius: 2px;
+                box-shadow: rgba(0, 0, 0, 0.0470588) 0px 1px 0px 0px;
+            }
+            
+            .panel-google-plus.panel-google-plus-show-comment > .panel-footer > .input-placeholder {
+                display: none;
+            }
+            
+            .panel-google-plus > .panel-google-plus-comment {
+                display: none;
+                padding: 10px 20px 15px;
+                border-top: 1px solid rgb(229, 229, 229);
+                background-color: rgb(245, 245, 245);
+            }
+            
+            .panel-google-plus.panel-google-plus-show-comment > .panel-google-plus-comment {
+                display: block;
+            }
+
+            
+            .panel-google-plus > .panel-google-plus-comment > .panel-google-plus-textarea {
+                float: right;
+                width: calc(100% - 56px);
+            }
+            
+            .panel-google-plus > .panel-google-plus-comment > .panel-google-plus-textarea > textarea {
+                display: block;
+                width: 100%;
+                background-color: rgb(255, 255, 255);
+                border: 1px solid rgb(217, 217, 217);
+                box-shadow: rgba(0, 0, 0, 0.0470588) 0px 1px 0px 0px;
+                resize: vertical;
+            }
+            
+            .panel-google-plus > .panel-google-plus-comment > .panel-google-plus-textarea > .btn {
+                margin-top: 10px;
+                margin-right: 8px;
+                width: 100%;
+            }
+            
+            @media (min-width: 992px) {
+                .panel-google-plus > .panel-google-plus-comment > .panel-google-plus-textarea > .btn {
+                    width: auto;
+                }
+            }
+            
+            .panel-google-plus .btn {
+                border-radius: 3px;
+            }
+            
+            .panel-google-plus .btn-default {
+                border: 1px solid rgb(217, 217, 217);
+                box-shadow: rgba(0, 0, 0, 0.0470588) 0px 1px 0px 0px;
+            }
+            
+            .panel-google-plus .btn-default:hover,
+            .panel-google-plus .btn-default:focus,
+            .panel-google-plus .btn-default:active {
+                background-color: rgb(255, 255, 255);
+                border-color: rgb(0, 0, 0);
+            }
+    </style>
+
+
+
+    <!--This part is for pie chart script-->
+<script>
+        window.Morris.Donut.prototype.setData = function(data, redraw) {
+            if (redraw == null) {
+                redraw = true;
+            }
+            this.data = data;
+            this.values = (function() {
+                var _i, _len, _ref, _results;
+                _ref = this.data;
+                _results = [];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    row = _ref[_i];
+                    _results.push(parseFloat(row.value));
+                }
+                return _results;
+            }).call(this);
+            this.dirty = true;
+            if (redraw) {
+                return this.redraw();
+            }
+        }
+
+        var donut = Morris.Donut({
+            element: 'donut-example',
+            data: [{
+                label: "Positive",
+                value: 0
+            }, {
+                label: "Neutral",
+                value: 0
+            }, {
+                label: "Negative",
+                value: 0
+            }],
+            colors: ["#009900", "#CCCCCC", "#FF3300"]
+        });
+
+        $('#btn1').on('click', function() {
+            donut.setData(update_data);
+        });
+
+
+        function updateOverallEmotionChart() {
+            var update_data = [{
+                label: "Positive",
+                value: positive_count
+            }, {
+                label: "Neutral",
+                value: neutural_count
+            }, {
+                label: "Negative",
+                value: negative_count
+            }];
+
+            donut.setData(update_data);
+        }
+</script>
+
+
+<script>
+//total count for each kind of tweets: positive, neutrual, negative
+var positive_count = 0;
+var neutural_count = 0;
+var negative_count = 0;
+//total count of the modal windows were created up to now
+var relpy_modal_count = 0;
+
+
+$('#search').on('click', function() {
+
+    resetEnvironment();
+
+      var key_word = $("#key_word").val();
+
+        alert(key_word);
+       $.ajax({
+        method: "POST",
+        url: "http://localhost:8080/trackingEmotion/responder",
+        data: {
+            send_key_word: key_word,
+        },
+        dataType: "html"
+        })
+        .done(function(msg) {
+                //no latest tweet concerning the search topic
+
+            if (msg === "failure") { 
+                    alert("Send failure!");
+                } else {
+                    //alert("Data Received Saved: " + msg);
+                    //processLatestTweet(msg);
+                    alert("Sucessfully send!")
+                  }
+            });
+    });
+
+
+//When the search button was clicked, we should clear all divs and reset all global varialbes corresponding the previous search 
+function resetEnvironment() {
+    neutural_count = 0;
+    negative_count = 0;
+    positive_count = 0;
+
+    $('#negative_tweets_container').empty();
+    $('#positive_tweets_container').empty();
+
+    var zero_data = [{
+        label: "Positive",
+        value: 0
+    }, {
+        label: "Neutral",
+        value: 0
+    }, {
+        label: "Negative",
+        value: 0
+    }];
+
+    donut.setData(zero_data);
+}
+
+
+
+
+    
+function send(clicked_id) {
+    var uni = clicked_id;
+    uni = "textarea#"+uni;
+    //alert($(uni).val());
+
+    var uniqueID = clicked_id;
+    var reply_text = $(uni).val();
+
+
+    $.ajax({
+        method: "POST",
+        url: "http://localhost:8080/trackingEmotion/ReplyTweet",
+        data: {
+            send_ID: uniqueID,
+            send_text: reply_text,
+        },
+        dataType: "html"
+        })
+        .done(function(msg) {
+                //no latest tweet concerning the search topic
+
+            if (msg === "failure") { 
+                    alert("Send failure!");
+                } else {
+                    //alert("Data Received Saved: " + msg);
+                    //processLatestTweet(msg);
+                    alert("Sucessfully send!")
+                  }
+            });
+
+}
+</script>
+
+
+
+
+<script>
+    function addWindows(status_id, screen_name) {
+        relpy_modal_count = relpy_modal_count + 1;
+        uniqueID = getUniqueID(status_id, screen_name);
+        str_tweet_window = getTweetWindowString(uniqueID);
+        str_modal_window = getModalWindowString(uniqueID);
+    }
+
+    function getUniqueID(status_id, screen_name) {
+        return status_id + "-" + screen_name;
+    }
+
+  </script>
+
+
+
+
+
+<!--This part is for updating new tweets and change panel-->
+<script>
+    function getLatestTweet() {
+
+         $.ajax({
+                method: "POST",
+                url: "http://localhost:8080/trackingEmotion/GetLatestTweets",
+                data: {
+                    name: "John",
+                    location: "Boston"
+                },
+                dataType: "html"
+            })
+            .done(function(msg) {
+                //no latest tweet concerning the search topic
+                if (msg === "null") { 
+                    //alert("null");
+                } else {
+                    //alert("Data Received Saved: " + msg);
+                    processLatestTweet(msg);
+                }
+            });
+    }
+
+
+
+
+
+
+
+    //this function should update related html element!
+    function processLatestTweet(tweetjson) {
+        //alert("the passed in tweetjson" + tweetjson);
+        obj = JSON.parse(tweetjson);
+        //get all attributes from the passed in Json object.
+        status_id = String(obj.status_id);
+        screen_name = String(obj.screen_name);
+        text = String(obj.text);
+        create_time = String(obj.create_time);
+        retweet_count = String(obj.retweet_count);
+        image_url = String(obj.image_url);
+
+        sentiment_value = String(obj.sentiment_value);
+
+
+
+        var temp_ID = getUniqueID(status_id, screen_name);
+        var strModal = getModalWindowString(temp_ID);
+        var strTweet = getTweetWindowString(temp_ID, text, create_time, retweet_count, image_url);
+        relpy_modal_count += 1;
+
+        //update modal count for each new passed in tweet. since we only display negative tweets, we only add the count for negative tweet.
+        if (sentiment_value === "-1") {
+            negative_count += 1;
+            $('#negative_tweets_container').append(strTweet);
+            $('#negative_tweets_container').append(strModal); 
+        
+        } else if (sentiment_value === "1"){
+            positive_count += 1;
+            $('#positive_tweets_container').append(strTweet);
+            $('#positive_tweets_container').append(strModal); 
+
+        } else {
+            neutural_count += 1;
+        }
+
+        updateOverallEmotionChart();
+
+    }
+
+function getTweetWindowString(uniqueID, text, create_time, retweet_count, image_url) {
+
+      var strTweet="";
+strTweet += "<div class=\"row\">";
+strTweet += "            <div clss=\"col-sm-2\">";
+strTweet += "            <\/div>";
+strTweet += "            <div class=\"col-sm-8 col-sm-offset-2\">";
+strTweet += "                <div class=\"[ panel panel-default ] panel-google-plus\">";
+strTweet += "                    <div class=\"panel-heading\">";
+strTweet += "                        <img class=\"[ img-circle pull-left ]\"src=\""; 
+strTweet += image_url;
+strTweet += "\" \/>";
+strTweet += "                        <h3>";
+strTweet += screen_name;
+strTweet += "<\/h3>";
+strTweet += "                        <h5><span>Shared publicly<\/span> - <span>";
+strTweet += create_time;
+strTweet += "<\/span> <\/h5>";
+strTweet += "                    <\/div>";
+strTweet += "                    <div class=\"panel-body\" style=\"padding-bottom: 5px;\">";
+strTweet += "                        <p>";
+strTweet += text;
+strTweet += "<\/p>";
+strTweet += "                    <\/div>";
+strTweet += "                    <div class=\"panel-footer\">";
+strTweet += "                        <button type=\"button\" class=\"[ btn btn-default ]\">";
+strTweet += retweet_count;
+strTweet += "<\/button>";
+strTweet += "                        <button type=\"button\" class=\"[ btn btn-default ]\" class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"";
+strTweet += "#" + "modal" + relpy_modal_count.toString();
+strTweet += "\"> ";
+strTweet += "                            <span class=\"[ glyphicon glyphicon-share-alt ]\"><\/span>";
+strTweet += "                        <\/button>";
+strTweet += "                    <\/div> ";
+strTweet += "                <\/div>";
+strTweet += "            <\/div>";
+strTweet += "            <div clss=\"col-sm-2\">";
+strTweet += "            <\/div>";
+strTweet += "    <\/div>";
+
+
+
+    return strTweet;
+    }
+
+
+
+
+
+
+
+function getModalWindowString(uniqueID) {
+
+var strModal="";
+strModal += "<div class=\"modal fade\" id=\""
+strModal += "modal" + relpy_modal_count.toString();
+strModal += "\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">";
+strModal += "  <div class=\"modal-dialog\">";
+strModal += "    <form id = \"form_1\">";
+strModal += "    <div class=\"modal-content\">";
+strModal += "      <div class=\"modal-header\">";
+strModal += "        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;<\/span><\/button>";
+strModal += "        <h4 class=\"modal-title\" id=\"myModalLabel\">Reply Text<\/h4>";
+strModal += "      <\/div>";
+strModal += "      <div class=\"modal-body\">";
+strModal += "        <textarea class=\"form-control\" rows=\"3\" id = \"";
+strModal += uniqueID;
+strModal += "\"><\/textarea>";
+strModal += "      <\/div>";
+strModal += "      <div class=\"modal-footer\">";
+strModal += "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close<\/button>";
+strModal += "          <button type=\"button\" class=\"btn btn-default\" id=\"";
+strModal += uniqueID;
+strModal += "\" onClick = \"send(this.id)\">Send<\/button>";
+strModal += "      <\/div>";
+strModal += "    <\/div>";
+strModal += "  <\/form>";
+strModal += "  <\/div>";
+strModal += "<\/div>"; 
+
+
+return strModal;
+    }
+
+
+
+
+    //this function is responsible for calling GetLatestTweets
+    function myfunction() {
+        
+        getLatestTweet();
+        //alert("enter my function");
+            setInterval(function() {
+            //alert("enter break1");
+                getLatestTweet();
+            }, 1000 * 1) //call the GetLatestTweets Servlet every 5 seconds
+    }
+
+
+
+    $(document).ready(function() {
+        $("#btn_json").click(function() {
+            $.getJSON("GetLatestTweets", function(result) {
+                $.each(result, function(i, field) {
+                    $("div").append(field + " ");
+                });
+            });
+        });
+    });
+
+
+
+
+    $('#query_latest_tweet').on('click', function() {
+        myfunction();
+    });
+</script>
+
+
+
+
+
+</body>
+
+</html>
+
+
