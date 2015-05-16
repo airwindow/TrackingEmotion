@@ -33,15 +33,20 @@ public class responder extends HttpServlet {
     /*The keyword should be passed in, by a Ajax request*/
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		try {
+			
+			String send_key_word = (String) request.getParameter("send_key_word");
+			String[] keywords = {send_key_word};
 		
-		String send_key_word = (String) request.getParameter("send_key_word");
-		String[] keywords = {send_key_word};
-		//String[] keywords_2 = {"Jingwei Yang"};
-		
-		//getListenJobReady();
-		CollectTweetsByKeyword.getListenJobReady();
-		CollectTweetsByKeyword.getTweetsByName(keywords);
-		
+			CollectTweetsByKeyword.getListenJobReady();
+			CollectTweetsByKeyword.getTweetsByName(keywords);
+			
+			response.getWriter().write("success");
+			
+		} catch(Exception e){
+			
+			response.getWriter().write("failure");
+		}
 		
 		
 		
