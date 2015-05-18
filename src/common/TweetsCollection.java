@@ -25,7 +25,7 @@ public class TweetsCollection {
 	
 	/*get the current size of the Collection*/
 	static public int getSize() {
-		System.out.println("the size is: " + String.valueOf(tweets_list.size()));
+		//System.out.println("the size is: " + String.valueOf(tweets_list.size()));
 		return tweets_list.size();
 	}
 }

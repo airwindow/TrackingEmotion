@@ -16,10 +16,16 @@
     <link rel="stylesheet" href="js/rs-plugin/css/settings.css">
     <link rel="stylesheet" href="css/freeze.css">
 
+    <link href="css/examples.css" rel="stylesheet" type="text/css">
+
 
 
     <!--Javascript part-->
+    
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    
+
+    
     <script type="text/javascript" src="js/modernizr.custom.32033.js"></script>
 
     <!--pie chart partition-->
@@ -29,6 +35,8 @@
 
 
     <!--trend char partition-->
+
+
 
 
 
@@ -163,7 +171,7 @@
                             <div class="col-xs-6 col-sm-6 col-md-6 col-sm-offset-3 ">
                                 <div class="form-group">
                                     <label class="control-label" for="textinput"> <i class="fa fa-video-camera"></i> Company Name </label>
-                                    <input id="key_word" name="textinput" placeholder="IBM" class="form-control input-md" type="text">
+                                    <input id="key_word" name="textinput" placeholder="Columbia" class="form-control input-md" type="text">
                                 </div>
                             </div>
                         </div>
@@ -200,24 +208,33 @@
 
 
 
-
     <!--Trend Part-->
     <div id = "trendPanel">
         <div class="section-heading inverse scrollpoint sp-effect3" style="
     margin-top: 120px;">
                     <p>Real-time Emotional Index About Your Company</p>
+
+            <div class="container">
+                <div class = "row">
+
+                    <div id="content">
+
+        <div class="demo-container">
+            <div id="trendchartholder" class="demo-placeholder"></div>
+        </div>
+
+    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
 
 
     <!--Chart Part-->
-    <div id = "chartPanel">
+    <div id = "chartPanel" style = "padding-top: 110px;">
            <div class="container">
-                 <div class="section-heading inverse scrollpoint sp-effect3" style="
-    margin-top: 120px;">
-                    <p>Public Opinions Toward Your Company</p>
-                </div>
                 <div class="row">
                 <div class="col-md-2 col-sm-2 col-xs-2">
                 </div>
@@ -242,11 +259,7 @@
 
 
     <!-- Negative Tweets Panel -->
-    <div id = "negativeTweetsPanel" style="padding-top: 70px;">
-        <div class="section-heading inverse scrollpoint sp-effect3" style="
-    margin-top: 120px;">
-            <p>Abnormal Tweets Conerning Your Company</p>
-        </div>
+    <div id = "negativeTweetsPanel" style="padding-top: 130px;">
         <div id = "negative_tweets_container" class="container">
         </div>
     </div>
@@ -255,11 +268,7 @@
 
 
     <!-- Positive Tweets Panel -->
-    <div id = "positiveTweetsPanel" style="padding-top: 70px;">
-        <div class="section-heading inverse scrollpoint sp-effect3" style="
-    margin-top: 120px;">
-            <p>Postive Tweets Concerning Your Company</p>
-        </div>
+    <div id = "positiveTweetsPanel" style="padding-top: 130px;">
         <div id = "positive_tweets_container" class="container">
         </div>
     </div>
@@ -284,11 +293,20 @@
 
 
 
+    <script language="javascript" type="text/javascript"
+    src="js/jquery.flot.js"></script>
+<script language="javascript" type="text/javascript"
+    src="js/jquery.flot.time.js"></script>
+<script type="text/javascript" src="js/query.flot.axislabels.js"></script>
+
+
+
     <!--This part is for preLoader-->
 
     <script>
         $(document).ready(function() {
             appMaster.preLoader();
+            drawtrend();
         });
     </script>
 
@@ -1102,6 +1120,133 @@ return strModal;
 
 
 
+
+<script type="text/javascript">
+
+
+
+var data = [];
+var dataset;
+var totalPoints = 100;
+var updateInterval = 1000;
+var now = new Date().getTime();
+
+
+
+function getRandomData() {
+    data.shift();
+
+    while (data.length < totalPoints) {
+        
+        var y;
+        if(positive_count == 0 && negative_count ==0 && neutural_count==0)
+            y = 0; 
+        else{
+            y = (positive_count + (negative_count*-1))/(positive_count+negative_count+neutural_count);
+        } 
+        //var sign = Math.floor(Math.random()*2);
+        //if(sign == 0)
+        //  y = -1*y;
+        var temp = [now += updateInterval,y];
+        data.push(temp);
+    }
+}
+
+var options = {
+        
+    series: {
+        lines: {
+        fill : true
+        }
+      
+    },
+    xaxis: {
+        mode: "time",
+        tickSize: [8, "second"],
+        tickFormatter: function (v, axis) {
+            var date = new Date(v);
+
+            if (date.getSeconds() % 20 == 0) {
+                var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+
+                return hours + ":" + minutes + ":" + seconds;
+            } else {
+                return "";
+            }
+        },
+        axisLabel: "Time",
+        axisLabelUseCanvas: true,
+        axisLabelFontSizePixels: 12,
+        axisLabelFontFamily: 'Verdana, Arial',
+        axisLabelPadding: 10
+    },
+    yaxis: {
+        min: -2,
+        max: 2,        
+        tickSize: 1,
+        axisLabel: "Emotional Index",
+        axisLabelUseCanvas: true,
+        axisLabelFontSizePixels: 12,
+        axisLabelFontFamily: 'Verdana, Arial',
+        axisLabelPadding: 10
+    },
+    legend: {        
+        labelBoxBorderColor: "#fff"
+    },
+    grid: {
+        borderWidth: 1,
+        minBorderMargin: 20,
+        labelMargin: 10,
+        backgroundColor: {
+            colors: ["#fff", "#e4f4f4"]
+        },
+        margin: {
+            top: 8,
+            bottom: 20,
+            left: 20
+        },
+        markings: function(axes) {
+            var markings = [];
+            var xaxis = axes.xaxis;
+            for (var x = Math.floor(xaxis.min); x < xaxis.max; x += xaxis.tickSize * 2) {
+                markings.push({
+                    xaxis: {
+                        from: x,
+                        to: x + xaxis.tickSize
+                    },
+                    color: "rgba(232, 232, 255, 0.2)"
+                });
+            }
+            return markings;
+        }
+    }
+};
+
+
+function update() {
+    getRandomData();
+    $.plot($("#trendchartholder"), dataset, options)
+    setTimeout(update, updateInterval);
+}
+
+
+
+function drawtrend() {
+    getRandomData();
+    dataset = [
+        { label: "Real-time", data: data, color: "#F9E509" }
+    ];
+
+    $.plot($("#trendchartholder"), dataset, options);
+    update();
+}
+
+
+
+
+</script>
 
 
 </body>
