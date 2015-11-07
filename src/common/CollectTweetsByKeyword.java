@@ -25,26 +25,15 @@ public class CollectTweetsByKeyword {
 		
 		getListenJobReady();
 		getTweetsByName(keywords);
-		
-		/*
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		getTweetsByName(keywords_2);
-		*/
-		
 	}
 	
 	public static void getListenJobReady() {
 		 ConfigurationBuilder cb = new ConfigurationBuilder();
 	        cb.setDebugEnabled(true)
-	          .setOAuthConsumerKey("Qrtfa7tRVdMnJVboGR9mtD84s")
-	          .setOAuthConsumerSecret("5aOmn7azudhFhvvp75NjpjN4JLyZjZwYuELWX6BnjCcSHIlGuV")
-	          .setOAuthAccessToken("1670776861-2IGs5zTnRBqxir81xG5J4gIKDG0CWU0O32MriQ4")
-	          .setOAuthAccessTokenSecret("MTvR4acrwUkIF3v1PvS8yGu4CcldJ4PdE3VhtydFuer6s");
+	          .setOAuthConsumerKey("aptXGK7o0Ry3SiYYb1KCIp2J8")
+	          .setOAuthConsumerSecret("VBHP5mafKrBvaicwT1SaVDXPLPmMUrqkygTI3C6v1L2rSZOAET")
+	          .setOAuthAccessToken("3239936099-CUY8INmN1bTdpBNC9uzU40lO4vGpojjiJLzMT4N")
+	          .setOAuthAccessTokenSecret("MyNMoP6MbgJiUzw0TtOqsqMbOOFQs6S3t8R6GgWClhDzl");
 	    
 	       twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 	       listener = new StatusListener() {
@@ -66,22 +55,6 @@ public class CollectTweetsByKeyword {
 	            
 	            
 	            TweetsCollection.addNewTweet(temp_tweet);
-
-	            //JSONObject json = new JSONObject(temp_tweet);
-	            
-	            //System.out.println("The tweet in JSON format:" + json.toString());
-
-	            	            
-	            
-	            //System.out.println("The user's place info latitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLatitude());
-	            //System.out.println("The user's place info logitude: " + status.getPlace().getBoundingBoxCoordinates()[0][0].getLongitude());
-
-
-	            
-	            
-	           	//int sent_value = SentimentAnalysis.metricSentiment(status.getText());
-	           	//System.out.println("sentivalue:" + String.valueOf(sent_value));
-	           	//TweetsFuntions.replyTweets(status.getUser().getScreenName(), status.getId(), "I trust you can do it!");;
 	            
 	   	           	
 	           	if(status.getGeoLocation() != null){
@@ -169,6 +142,8 @@ public class CollectTweetsByKeyword {
 			
 		}
 	       FilterQuery filtre = new FilterQuery();
+	       String[] lang = {"en"};
+	       filtre.track(lang);
 	       filtre.track(keywords);
 	       twitterStream.filter(filtre);
 		}

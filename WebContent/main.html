@@ -8,24 +8,16 @@
     <title>Real-time rummor tracking system</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/slick.css">
     <link rel="stylesheet" href="js/rs-plugin/css/settings.css">
     <link rel="stylesheet" href="css/freeze.css">
-
     <link href="css/examples.css" rel="stylesheet" type="text/css">
 
-
-
     <!--Javascript part-->
-    
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-    
-
-    
     <script type="text/javascript" src="js/modernizr.custom.32033.js"></script>
 
     <!--pie chart partition-->
@@ -33,21 +25,12 @@
     <script src="http://cdn.oesmith.co.uk/morris-0.4.1.min.js"></script>
 
 
-
     <!--trend char partition-->
-
-
-
 
 
     <!--This part is for abnormal tweets-->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" media="screen">
-
-
-   
-
-
     </style>
 </head>
 
@@ -159,11 +142,8 @@
         <div class="wrapper">
             <div class="container auth" style="padding: 90px 230px;">
             <div class="section-heading inverse scrollpoint sp-effect3">
-                    <p>Understand What's The People Are Saying About Your Company</p>
-                </div>
-
-
-
+                <p>Understand What's The People Are Saying About Your Company</p>
+            </div>
             <div id="big-form" class="well auth-box">
                     <fieldset>
                         <!-- Text input-->
@@ -195,34 +175,17 @@
     </div>
 
 
-
-    <!--
-    <div class="container">
-    <div class = "row">
-    <input id = "key_word" type = "text" name = "Key Word">
-    <button id="search">Search</button>
-    <button id="query_latest_tweet">Query Latest Tweets</button>
-    </div>
-    </div>
--->
-
-
-
     <!--Trend Part-->
     <div id = "trendPanel">
         <div class="section-heading inverse scrollpoint sp-effect3" style="
     margin-top: 120px;">
                     <p>Real-time Emotional Index About Your Company</p>
-
-            <div class="container">
-                <div class = "row">
-
+                <div class="container">
+                    <div class = "row">
                     <div id="content">
-
-        <div class="demo-container">
+                <div class="demo-container">
             <div id="trendchartholder" class="demo-placeholder"></div>
         </div>
-
     </div>
                 </div>
             </div>
@@ -266,19 +229,11 @@
 
 
 
-
     <!-- Positive Tweets Panel -->
     <div id = "positiveTweetsPanel" style="padding-top: 130px;">
         <div id = "positive_tweets_container" class="container">
         </div>
     </div>
-
-
-
-
-
-
-
 
 
     </div>
@@ -845,8 +800,8 @@ $('#search').on('click', function() {
             });
 
     //begin to request latest tweets
-    myfunction();
-    });
+    moniterTweets();
+});
 
 
 //When the search button was clicked, we should clear all divs and reset all global varialbes corresponding the previous search 
@@ -1088,12 +1043,9 @@ return strModal;
 
 
     //this function is responsible for calling GetLatestTweets
-    function myfunction() {
-        
+    function moniterTweets() {
         getLatestTweet();
-        //alert("enter my function");
             setInterval(function() {
-            //alert("enter break1");
                 getLatestTweet();
             }, 1000 * 1) //call the GetLatestTweets Servlet every 5 seconds
     }
@@ -1114,7 +1066,7 @@ return strModal;
 
 
     $('#query_latest_tweet').on('click', function() {
-        myfunction();
+        moniterTweets();
     });
 </script>
 
@@ -1133,20 +1085,16 @@ var now = new Date().getTime();
 
 
 
-function getRandomData() {
+function getIndexData() {
     data.shift();
 
     while (data.length < totalPoints) {
-        
         var y;
         if(positive_count == 0 && negative_count ==0 && neutural_count==0)
             y = 0; 
         else{
             y = (positive_count + (negative_count*-1))/(positive_count+negative_count+neutural_count);
         } 
-        //var sign = Math.floor(Math.random()*2);
-        //if(sign == 0)
-        //  y = -1*y;
         var temp = [now += updateInterval,y];
         data.push(temp);
     }
@@ -1226,7 +1174,7 @@ var options = {
 
 
 function update() {
-    getRandomData();
+    getIndexData();
     $.plot($("#trendchartholder"), dataset, options)
     setTimeout(update, updateInterval);
 }
@@ -1234,7 +1182,7 @@ function update() {
 
 
 function drawtrend() {
-    getRandomData();
+    getIndexData();
     dataset = [
         { label: "Real-time", data: data, color: "#F9E509" }
     ];

@@ -48,21 +48,6 @@ public class responder extends HttpServlet {
 			response.getWriter().write("failure");
 		}
 		
-		
-		
-		/*
-		HashMap<String, String> map = new HashMap<String, String> ();
-		
-		int random_number = DistributedRandomNumberGenerator.getNumber();
-		map.put("tweet_id", "101001");
-		map.put("tweet_text", "This is a sample text");
-		map.put("sentiment_vaule", String.valueOf(random_number));
-		
-		JSONObject jo = new JSONObject(map);
-		response.getWriter().write(jo.toString());
-		*/
-		//response.getWriter().write("Hello!");
-		//System.out.println("I have just sent a message to frontend");
 	}
 
 	/**
