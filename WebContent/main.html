@@ -245,14 +245,13 @@
     <script src="js/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
     <script src="js/waypoints.min.js"></script>
     <script src="js/scripts.js"></script>
+    <script src="js/queue.js"></script>
 
 
 
-    <script language="javascript" type="text/javascript"
-    src="js/jquery.flot.js"></script>
-<script language="javascript" type="text/javascript"
-    src="js/jquery.flot.time.js"></script>
-<script type="text/javascript" src="js/query.flot.axislabels.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.time.js"></script>
+    <script type="text/javascript" src="js/query.flot.axislabels.js"></script>
 
 
 
@@ -768,6 +767,9 @@
 var positive_count = 0;
 var neutural_count = 0;
 var negative_count = 0;
+//the global queue for simulating slide window over latest tweets
+var sentiment_queue = new Queue();
+
 //total count of the modal windows were created up to now
 var relpy_modal_count = 0;
 
@@ -809,6 +811,7 @@ function resetEnvironment() {
     neutural_count = 0;
     negative_count = 0;
     positive_count = 0;
+    sentiment_queue = new Queue();
 
     $('#negative_tweets_container').empty();
     $('#positive_tweets_container').empty();
@@ -910,11 +913,6 @@ function send(clicked_id) {
     }
 
 
-
-
-
-
-
     //this function should update related html element!
     function processLatestTweet(tweetjson) {
         //alert("the passed in tweetjson" + tweetjson);
@@ -926,9 +924,7 @@ function send(clicked_id) {
         create_time = String(obj.create_time);
         retweet_count = String(obj.retweet_count);
         image_url = String(obj.image_url);
-
         sentiment_value = String(obj.sentiment_value);
-
 
 
         var temp_ID = getUniqueID(status_id, screen_name);
@@ -936,23 +932,36 @@ function send(clicked_id) {
         var strTweet = getTweetWindowString(temp_ID, text, create_time, retweet_count, image_url);
         relpy_modal_count += 1;
 
-        //update modal count for each new passed in tweet. since we only display negative tweets, we only add the count for negative tweet.
+
+        //to simulate the slide window over collected tweets, once the queue's size meets the size restriction, we dequeue the front element in the slide window
+        if (sentiment_queue.getLength() == 300) {
+            var front = sentiment_queue.dequeue();
+            if (front == 1) {
+                positive_count -= 1;
+            } else if (front == -1) {
+                negative_count -= 1;
+            } else {
+                neutural_count -= 1;
+            }
+        }
+
         if (sentiment_value === "-1") {
+            sentiment_queue.enqueue(-1);
             negative_count += 1;
             $('#negative_tweets_container').append(strTweet);
             $('#negative_tweets_container').append(strModal); 
         
         } else if (sentiment_value === "1"){
+            sentiment_queue.enqueue(1);
             positive_count += 1;
             $('#positive_tweets_container').append(strTweet);
             $('#positive_tweets_container').append(strModal); 
 
         } else {
+            sentiment_queue.enqueue(0);
             neutural_count += 1;
         }
-
         updateOverallEmotionChart();
-
     }
 
 function getTweetWindowString(uniqueID, text, create_time, retweet_count, image_url) {
@@ -1047,7 +1056,7 @@ return strModal;
         getLatestTweet();
             setInterval(function() {
                 getLatestTweet();
-            }, 1000 * 1) //call the GetLatestTweets Servlet every 5 seconds
+            }, 200 * 1) //call the GetLatestTweets Servlet every 1 seconds
     }
 
 
